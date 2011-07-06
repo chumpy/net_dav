@@ -458,11 +458,41 @@ module Net #:nodoc:
         end
       end
       path.sub!(/\/$/, '')
-      doc./('.//x:response', namespaces).each do |item|
-        uri = @uri.merge(item.xpath("x:href", namespaces).inner_text)
-        size = item.%(".//x:getcontentlength", namespaces).inner_text rescue nil
-        type = item.%(".//x:collection", namespaces) ? :directory : :file
-        res = Item.new(self, uri, type, size)
+
+      doc.root.children.each do |node|
+      if node.name == 'response'
+      uri = size = type = displayname = creationdate = lastmodified = ishidden = contenttype = nil
+      node.children.each do |n|
+        if n.name == 'href'
+          uri = @uri.merge(n.inner_text)
+        elsif n.name == 'propstat'
+          n.children.each do |p1|
+            if p1.name == 'prop'
+              p1.children.each do |prop|
+                case prop.name
+                  when 'getcontentlength'
+                    size = prop.inner_text
+                  when 'getncontenttype'
+                    contenttype = prop.inner_text
+                  when 'iscollection'
+                    type = (prop.inner_text.to_i == 1 ? :directory : :file)
+                  when 'displayname'
+                    displayname = prop.inner_text
+                  when 'creationdate'
+                    creationdate = prop.inner_text
+                  when 'getlastmodified'
+                    lastmodified = prop.inner_text
+                  when 'ishidden'
+                    ishidden = (prop.inner_text.to_i == 1 ? true : false)
+                end
+              end
+            end
+          end
+        end
+      end
+          
+        res = Item.new(self, uri, type, size, displayname, creationdate, lastmodified, ishidden, contenttype)
+ 
         if type == :file then
 
           if(options[:filename])then
