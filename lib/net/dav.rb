@@ -489,8 +489,7 @@ module Net #:nodoc:
             end
           end
         end
-      end
-          
+	end          
         res = Item.new(self, uri, type, size, displayname, creationdate, lastmodified, ishidden, contenttype)
  
         if type == :file then
@@ -526,6 +525,7 @@ module Net #:nodoc:
         end
       end
     end
+end
 
     # Change the base URL for use in handling relative paths
     def cd(url)
@@ -684,6 +684,5 @@ module Net #:nodoc:
     def verify_server=(value)
       @handler.verify_server = value
     end
-
-  end
+end
 end

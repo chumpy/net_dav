@@ -11,16 +11,36 @@ module Net
       # Type of item - :directory or :file
       attr_reader :type
 
+      # display name
+      attr_reader :displayname
+
+      # file/directory create date
+      attr_reader :creationdate
+
+      # file/directory last modified time
+      attr_reader :lastmodified
+      
+      # is the file/directory hidden?
+      attr_reader :ishidden
+      
+      # mime type of file
+      attr_reader :contenttype
+
       # Synonym for uri
       def url
         @uri
       end
 
-      def initialize(dav, uri, type, size) #:nodoc:
-        @uri = uri
-        @size = size.to_i rescue nil
-        @type = type
+      def initialize(dav, uri, type, size, displayname, creationdate, lastmodified, ishidden, contenttype) #:nodoc:
         @dav = dav
+        @uri = uri
+        @type = type
+        @size = size.to_i rescue nil
+        @displayname = displayname
+        @creationdate = creationdate
+        @lastmodified = lastmodified
+        @ishidden = ishidden
+        @contenttype = contenttype
       end
 
       # Get content from server if needed and return as string
